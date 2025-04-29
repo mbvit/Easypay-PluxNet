@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    restart: always
+    volumes:
+      - .:/var/www
+    depends_on:
+      - caddy
+    networks:
+      - laravel_network
+
+  caddy:
+    image: caddy:latest
+    container_name: laravel_caddy
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile
+    depends_on:
+      - app
+    networks:
+      - laravel_network
+
+  sqlite:
+    image: alpine
+    container_name: sqlite_db
+    volumes:
+      - ./database/database.sqlite:/var/www/database/database.sqlite
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+    driver: bridge
