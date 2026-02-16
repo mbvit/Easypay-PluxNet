@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Environment & Config
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build artifacts
+public/build/
+public/hot
+
+# Storage & Logs
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/logs/.gitkeep
+!storage/framework/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+
+# Testing
+tests/
+.phpunit.result.cache
+phpunit.xml
+
+# Development
+ProdBuilds/
+*.md
+!README.md
+deployment.sh
+production.sh
+laravel_restart.sh
+docker-compose.old.yml
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.swp
+*.swo
+*~
