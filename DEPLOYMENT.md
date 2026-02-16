@@ -110,7 +110,7 @@ docker build -t easypay-pluxnet:latest .
 docker compose up -d
 ```
 
-3. **Configure reverse proxy (nginx/Caddy):**
+3. **Configure reverse proxy (nginx/Caddy/Nginx Proxy Manager):**
 ```nginx
 server {
     listen 80;
@@ -122,9 +122,66 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
     }
 }
 ```
+
+### Option 3: Nginx Proxy Manager Configuration
+
+**Docker Configuration (.env file):**
+```bash
+# Set APP_URL to your actual domain
+APP_URL=https://easypay.yourdomain.com
+```
+
+**Nginx Proxy Manager Settings:**
+
+1. **Proxy Host Configuration:**
+   - **Domain Names**: `easypay.yourdomain.com`
+   - **Scheme**: `http`
+   - **Forward Hostname/IP**: `localhost` (or your server IP if NPM is on different server)
+   - **Forward Port**: `8000`
+   - **Cache Assets**: ✅ Enabled
+   - **Block Common Exploits**: ✅ Enabled
+   - **Websockets Support**: ✅ Enabled
+
+2. **Custom Nginx Configuration (Advanced tab):**
+   ```nginx
+   # Required headers for Laravel behind proxy
+   proxy_set_header Host $host;
+   proxy_set_header X-Real-IP $remote_addr;
+   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto $scheme;
+   proxy_set_header X-Forwarded-Host $host;
+   proxy_set_header X-Forwarded-Port $server_port;
+   
+   # Increase buffer sizes for large responses
+   proxy_buffer_size 128k;
+   proxy_buffers 4 256k;
+   proxy_busy_buffers_size 256k;
+   ```
+
+3. **SSL Configuration:**
+   - Use **Let's Encrypt** to generate free SSL certificate
+   - Enable **Force SSL** 
+   - Enable **HTTP/2 Support**
+   - Enable **HSTS Enabled** (recommended)
+
+4. **After Configuration:**
+   ```bash
+   # Rebuild container to apply APP_URL change
+   docker-compose down
+   docker-compose build
+   docker-compose up -d
+   ```
+
+**Troubleshooting NPM:**
+- If assets (CSS/JS) don't load, verify `APP_URL` matches your domain exactly
+- Check browser console for mixed content warnings (http vs https)
+- Ensure NPM is forwarding headers correctly (see custom config above)
+- Clear Laravel cache: `docker exec easypay-pluxnet php artisan optimize:clear`
 
 ### Option 2: Save/Load Docker Image
 
