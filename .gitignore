@@ -1,0 +1,45 @@
+# Dependencies
+/node_modules
+/vendor
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# Build outputs
+/public/hot
+/public/storage
+/public/build
+/storage/*.key
+
+# Database
+database/database.sqlite
+database/database.sqlite-journal
+*.sqlite
+*.sqlite-journal
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+*~
+
+# Testing
+.phpunit.result.cache
+phpunit.xml
+
+# Laravel
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker (optional - uncomment if needed)
+# .env.docker
